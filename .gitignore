@@ -2,3 +2,7 @@
 **/*.swp
 paths.txt
 venv/
+# ansible
+inventory
+ansible.cfg
+

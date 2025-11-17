@@ -14,15 +14,18 @@ if __name__ == '__main__':
     while True:
         time.sleep(10)
         with redis.Redis().from_pool(pool) as r:
-            recs = r.scard("paths")
-            print(f"[+] Got {recs} records")
-            if last >= recs:
-                print(" ... no new records to store")
-                continue
+            try:
+                recs = r.scard("paths")
+                print(f"[+] Got {recs} records")
+                if last >= recs:
+                    print(" ... no new records to store")
+                    continue
 
-            print(f"[+] Storing {recs} records")
+                print(f"[+] Storing {recs} records")
 
-            paths = r.smembers("paths")
-            store(paths)
+                paths = r.smembers("paths")
+                store(paths)
 
-            print(f"[+] Stored {recs} records")
+                print(f"[+] Stored {recs} records")
+            except redis.exceptions.ConnectionError:
+                print("[ERR] Redis connection error this time...")

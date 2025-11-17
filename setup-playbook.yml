@@ -1,0 +1,122 @@
+---
+- hosts: all
+  tasks:
+    - name: ping
+      tags: ping
+      ansible.builtin.ping:
+
+    - name: ensure nginx is at the latest version
+      tags: nginx
+      apt:
+        name:
+          - nginx
+        state: latest
+        update_cache: yes
+
+    - name: copy the nginx config file
+      tags: nginx
+      copy:
+        src: nginx/nginx.conf
+        dest: /etc/nginx/sites-available/default.conf
+
+    - name: put a domain name in the config
+      ansible.builtin.lineinfile:
+        path: /etc/nginx/sites-available/default.conf
+        regexp: '^\s*server_name YOUR_DOMAIN;.*$'
+        line: "    server_name {{domain}};"
+
+    - name: create symlink
+      tags: nginx
+      file:
+        src: /etc/nginx/sites-available/default.conf
+        dest: /etc/nginx/sites-enabled/default
+        state: link
+
+    - name: start nginx
+      tags: nginx
+      service:
+        name: nginx
+        state: started
+
+    - name: install certbot
+      tags: certbot
+      apt:
+        name:
+          - certbot
+          - python3-certbot-nginx
+        state: latest
+        update_cache: yes
+
+    - name: get certificate
+      tags: certbot
+      command: 'certbot -n --nginx -d {{domain}} --agree-tos --email {{email}}'
+      args:
+        creates: '/etc/letsencrypt/live/{{domain}}'
+      ignore_errors: true
+
+# Docker
+    - name: Install required system packages
+      tags: docker
+      apt:
+        pkg:
+          - apt-transport-https
+          - ca-certificates
+          - curl
+          - software-properties-common
+        state: latest
+        update_cache: true
+
+    - name: Add Docker GPG apt Key
+      tags: docker
+      apt_key:
+        url: https://download.docker.com/linux/ubuntu/gpg
+        state: present
+
+    - name: Add Docker Repository
+      tags: docker
+      apt_repository:
+        repo: 'deb https://download.docker.com/linux/ubuntu {{ansible_distribution_release}} stable'
+        state: present
+
+    - name: Update apt and install docker-ce
+      tags: docker
+      apt:
+        name: 
+          - docker-ce
+          - docker-ce-cli
+          - docker-compose-plugin
+        state: latest
+        update_cache: true
+
+# copy repo
+    - name: Create dir for urifarm
+      tags: run
+      ansible.builtin.file:
+        path: /opt/urifarm
+        state: directory
+
+    - name: Copy docker compose
+      tags: run
+      copy:
+        src: docker-compose.yml
+        dest: /opt/urifarm/docker-compose.yml
+
+    - name: Copy web
+      tags: run
+      copy:
+        src: web/
+        dest: /opt/urifarm/web/
+
+    - name: Copy farmer
+      tags: run
+      copy:
+        src: farmer/
+        dest: /opt/urifarm/farmer/
+
+    - name: deploy docker compose
+      tags: run
+      community.docker.docker_compose_v2:
+        project_src: /opt/urifarm/
+        files:
+          - docker-compose.yml
+
