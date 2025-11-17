@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Terra Lux Expeditions - Curated Luxury Adventures</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #a47449; /* Deep Gold/Bronze */
+            --secondary-color: #5d4037; /* Warm Mocha */
+            --light-bg: #f5f5f5;
+            --dark-text: #333333;
+            --font-serif: 'Playfair Display', serif;
+            --font-sans: 'Lato', sans-serif;
+        }
+
+        body {
+            font-family: var(--font-sans);
+            margin: 0;
+            padding: 0;
+            color: var(--dark-text);
+            background-color: white;
+            line-height: 1.7;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* --- Header/Navigation --- */
+        header {
+            background-color: white;
+            padding: 15px 0;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-family: var(--font-serif);
+            font-size: 2em;
+            font-weight: 700;
+            color: var(--secondary-color);
+            text-decoration: none;
+            letter-spacing: 2px;
+        }
+
+        .nav-links a {
+            color: var(--dark-text);
+            text-decoration: none;
+            margin-left: 30px;
+            font-weight: 400;
+            transition: color 0.3s;
+            text-transform: uppercase;
+            font-size: 0.9em;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary-color);
+        }
+
+        /* --- Hero Section --- */
+        #hero {
+            background-image: url('https://picsum.photos/1200/600?grayscale&blur=2'); /* Placeholder image for a luxurious travel feel */
+            background-size: cover;
+            background-position: center;
+            height: 60vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: white;
+            position: relative;
+        }
+        #hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.4); /* Dark overlay */
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 10;
+        }
+
+        #hero h1 {
+            font-family: var(--font-serif);
+            font-size: 4em;
+            margin-bottom: 10px;
+            font-weight: 700;
+            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.6);
+        }
+
+        #hero p {
+            font-size: 1.2em;
+            margin-bottom: 40px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            font-weight: 300;
+        }
+
+        .cta-button {
+            display: inline-block;
+            background-color: var(--primary-color);
+            color: white;
+            padding: 12px 35px;
+            border-radius: 3px;
+            text-decoration: none;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: background-color 0.3s, transform 0.2s;
+            border: 2px solid var(--primary-color);
+        }
+
+        .cta-button:hover {
+            background-color: var(--secondary-color);
+            border-color: var(--secondary-color);
+            transform: scale(1.02);
+        }
+
+        /* --- Destinations Section --- */
+        #destinations {
+            padding: 80px 0;
+            text-align: center;
+            background-color: var(--light-bg);
+        }
+
+        h2 {
+            font-family: var(--font-serif);
+            font-size: 3em;
+            margin-bottom: 15px;
+            color: var(--secondary-color);
+        }
+        .subtitle {
+            font-size: 1.1em;
+            margin-bottom: 50px;
+            color: #666;
+        }
+
+        .destination-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        .destination-card {
+            background-color: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            text-align: left;
+            transition: box-shadow 0.3s;
+        }
+        .destination-card:hover {
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .destination-card img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            display: block;
+        }
+
+        .card-content {
+            padding: 20px;
+        }
+
+        .card-content h3 {
+            font-family: var(--font-serif);
+            color: var(--primary-color);
+            margin-top: 0;
+            font-size: 1.8em;
+        }
+
+        .card-content p {
+            font-size: 0.95em;
+            color: #555;
+            margin-bottom: 20px;
+        }
+
+        /* --- Sustainability Callout --- */
+        #sustainability {
+            padding: 60px 0;
+            text-align: center;
+            background-color: var(--secondary-color);
+            color: white;
+        }
+        #sustainability h3 {
+            font-family: var(--font-serif);
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        #sustainability p {
+            max-width: 800px;
+            margin: 0 auto 30px;
+            opacity: 0.9;
+        }
+        .sustainability-link {
+             color: white;
+             text-decoration: underline;
+             font-weight: 700;
+        }
+
+        /* --- Footer --- */
+        footer {
+            background-color: var(--dark-text);
+            color: var(--light-bg);
+            padding: 30px 0;
+            text-align: center;
+            font-size: 0.9em;
+        }
+
+        footer a {
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="container nav">
+            <a href="#" class="logo">Terra Lux</a>
+            <nav class="nav-links">
+                <a href="#destinations">Expeditions</a>
+                <a href="#sustainability">Ethos</a>
+                <a href="#">Contact</a>
+            </nav>
+        </div>
+    </header>
+
+    <section id="hero">
+        <div class="hero-content">
+            <h1>The World, Curated For You.</h1>
+            <p>Terra Lux crafts personalized, private journeys that redefine luxury, mixing breathtaking adventure with unparalleled comfort and stewardship.</p>
+            <a href="#" class="cta-button">Discover Your Journey</a>
+        </div>
+    </section>
+
+    <section id="destinations">
+        <div class="container">
+            <h2>Featured Expeditions</h2>
+            <p class="subtitle">Bespoke itineraries for the discerning global traveler.</p>
+            <div class="destination-grid">
+
+                <div class="destination-card">
+                    <img src="https://picsum.photos/400/200?random=1" alt="Image of the Arctic Tundra">
+                    <div class="card-content">
+                        <h3>Arctic Lights & Ice</h3>
+                        <p>A private charter to view the Aurora Borealis from a glass-domed igloo and track indigenous wildlife.</p>
+                    </div>
+                </div>
+
+                <div class="destination-card">
+                    <img src="https://picsum.photos/400/200?random=2" alt="Image of a luxury villa in Tuscany">
+                    <div class="card-content">
+                        <h3>Tuscan Culinary Retreat</h3>
+                        <p>Stay in a private 16th-century villa, enjoying exclusive wine tastings and cooking masterclasses with Michelin chefs.</p>
+                    </div>
+                </div>
+
+                <div class="destination-card">
+                    <img src="https://picsum.photos/400/200?random=3" alt="Image of a secluded Asian beach">
+                    <div class="card-content">
+                        <h3>Islands of the Rising Sun</h3>
+                        <p>Explore Japan's hidden islands and temples via private yacht, focusing on serene culture and art history.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="sustainability">
+        <div class="container">
+            <h3>Travel with a Purpose</h3>
+            <p>Every journey booked contributes directly to local conservation efforts and community support initiatives, ensuring our impact is as positive as your experience.</p>
+            <a href="#" class="sustainability-link">Learn More About Our Ethos</a>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 Terra Lux Expeditions. Crafting memories, responsibly. | <a href="#">Inquire Now</a></p>
+        </div>
+    </footer>
+
+</body>
+</html>
