@@ -1,14 +1,13 @@
 from flask import Flask, request
+import redis
 app = Flask(__name__)
 
-def send_path(path):
-    import pika
-    connection = pika.BlockingConnection(pika.ConnectionParameters(host='rabbit'))
-    channel = connection.channel()
-    channel.queue_declare(queue='paths')
+pool = redis.ConnectionPool().from_url("redis://redis")
 
-    channel.basic_publish(exchange='', routing_key='paths', body=path)
-    connection.close()
+def send_path(path):
+    with redis.Redis().from_pool(pool) as r:
+        r.sadd("paths", path)
+
 
 
 @app.route('/', defaults={'path': ''})

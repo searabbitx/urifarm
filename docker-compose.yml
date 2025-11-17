@@ -11,8 +11,8 @@ services:
     networks:
       - urifarmnet
     depends_on:
-      rabbit:
-        condition: service_healthy
+      redis:
+        condition: service_started
       
   farmer:
     build: farmer
@@ -23,25 +23,18 @@ services:
           target: /opt/app
     networks:
       - urifarmnet
-    depends_on:
-      rabbit:
-        condition: service_healthy
-    
-  rabbit:
-    image: rabbitmq:latest
-    container_name: rabbit
-    restart: always
-    environment:
-      RABBITMQ_DEFAULT_USER: guest
-      RABBITMQ_DEFAULT_PASS: guest
-    healthcheck:
-      test: rabbitmq-diagnostics -q ping
-      interval: 5s
-      timeout: 10s
-      retries: 3
     volumes:
-      - rabbitmq-lib:/var/lib/rabbitmq/
-      - rabbitmq-log:/var/log/rabbitmq
+      - ${PWD}/out:/opt/app/out
+    depends_on:
+      redis:
+        condition: service_started
+    
+  redis:
+    image: redis:latest
+    restart: always
+    command: redis-server --save 20 1 
+    volumes:
+      - redis-data:/data
     networks:
       - urifarmnet
 
@@ -50,7 +43,5 @@ networks:
     driver: bridge
 
 volumes:
-  rabbitmq-lib:
-    driver: local
-  rabbitmq-log:
+  redis-data:
     driver: local

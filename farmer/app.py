@@ -1,37 +1,28 @@
-import pika, sys, os, time
+import redis
+import time
 
-def connect():
-    try:
-        connection = pika.BlockingConnection(pika.ConnectionParameters(host='rabbit'))
-        print(" [x] Connected")
-        return connection
-    except pika.exceptions.AMQPConnectionError:
-        print(" [x] Connection failed, reconnecting")
-        time.sleep(1)
-        return connect()
+pool = redis.ConnectionPool().from_url("redis://redis")
+last = 0
 
 
-def main():
-    connection = connect()
-    channel = connection.channel()
-
-    channel.queue_declare(queue='paths')
-
-    def callback(ch, method, properties, body):
-        print(f" [x] Received {body}")
-
-    channel.basic_consume(queue='paths', on_message_callback=callback, auto_ack=True)
-
-    print(' [*] Waiting for messages. To exit press CTRL+C')
-    channel.start_consuming()
-
+def store(paths):
+    with open("out/paths.txt", 'wb') as f:
+        for path in paths:
+            f.write(path + b'\n')
 
 if __name__ == '__main__':
-    try:
-        main()
-    except KeyboardInterrupt:
-        print('Interrupted')
-        try:
-            sys.exit(0)
-        except SystemExit:
-            os._exit(0)
+    while True:
+        time.sleep(10)
+        with redis.Redis().from_pool(pool) as r:
+            recs = r.scard("paths")
+            print(f"[+] Got {recs} records")
+            if last >= recs:
+                print(" ... no new records to store")
+                continue
+
+            print(f"[+] Storing {recs} records")
+
+            paths = r.smembers("paths")
+            store(paths)
+
+            print(f"[+] Stored {recs} records")
