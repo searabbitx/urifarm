@@ -8,4 +8,49 @@ services:
         - action: sync+restart
           path: ./web
           target: /opt/app
+    networks:
+      - urifarmnet
+    depends_on:
+      rabbit:
+        condition: service_healthy
+      
+  farmer:
+    build: farmer
+    develop:
+      watch:
+        - action: sync+restart
+          path: ./farmer
+          target: /opt/app
+    networks:
+      - urifarmnet
+    depends_on:
+      rabbit:
+        condition: service_healthy
     
+  rabbit:
+    image: rabbitmq:latest
+    container_name: rabbit
+    restart: always
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+    healthcheck:
+      test: rabbitmq-diagnostics -q ping
+      interval: 5s
+      timeout: 10s
+      retries: 3
+    volumes:
+      - rabbitmq-lib:/var/lib/rabbitmq/
+      - rabbitmq-log:/var/log/rabbitmq
+    networks:
+      - urifarmnet
+
+networks:
+  urifarmnet:
+    driver: bridge
+
+volumes:
+  rabbitmq-lib:
+    driver: local
+  rabbitmq-log:
+    driver: local
