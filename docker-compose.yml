@@ -1,0 +1,11 @@
+services:
+  web:
+    build: web
+    ports:
+      - "3000:3000"
+    develop:
+      watch:
+        - action: sync+restart
+          path: ./web
+          target: /opt/app
+    
